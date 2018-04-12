@@ -66,7 +66,7 @@ int main (int argc, char **argv)
     unsigned int taper_len = 4;         // taper length
 
     modulation_scheme ms = LIQUID_MODEM_QPSK;// modulation scheme
-    unsigned int payload_len = 1200;        // original data message length
+    unsigned int payload_len = 256;        // original data message length
     //crc_scheme check = LIQUID_CRC_32;       // data validity check
     fec_scheme fec0 = LIQUID_FEC_NONE;      // fec (inner)
     fec_scheme fec1 = LIQUID_FEC_GOLAY2412; // fec (outer)

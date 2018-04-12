@@ -161,6 +161,15 @@ int multichanneltx::IsChannelReadyForData(unsigned int _channel)
     return ofdmflexframegen_is_assembled(framegen[_channel]) ? 0 : 1;
 }
 
+int multichanneltx::AllChannelsReady()
+{
+    for(unsigned int i = 0; i < num_channels; i++)
+        if(ofdmflexframegen_is_assembled(framegen[i]))
+            return 1;
+
+    return 0;
+}
+
 // update payload data on a particular channel
 void multichanneltx::UpdateData(unsigned int    _channel,
                                 unsigned char * _header,

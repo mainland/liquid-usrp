@@ -32,7 +32,7 @@
 
 #include "multichannelrx.h"
 
-#define BST_DEBUG 1
+#define BST_DEBUG 0
 
 // default constructor
 //  _num_channels   :   number of channels

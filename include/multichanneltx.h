@@ -51,6 +51,7 @@ public:
 
     // is channel ready for more data?
     int IsChannelReadyForData(unsigned int _channel);
+    int AllChannelsReady();
 
     // update payload data on a particular channel
     void UpdateData(unsigned int    _channel,

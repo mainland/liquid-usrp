@@ -51,6 +51,7 @@ int callback(unsigned char *  _header,
 	    unsigned int channel = _header[2];
 	    printf("channel: %u ", channel);
             printf("rx packet id: %6u", packet_id);
+            printf(" size: %u", _payload_len);
             if (_payload_valid) 
 	    {
 	      printf("\n");
@@ -83,14 +84,14 @@ int main (int argc, char **argv)
     // command-line options
     verbose = true;
 
-    double frequency = 462.0e6;         // center frequency [Hz]
-    double bandwidth = 250e3f;          // channel bandwidth [Hz]
+    double frequency = 2.505e9;         // center frequency [Hz]
+    double bandwidth = 5e6f;          // channel bandwidth [Hz]
     unsigned int num_channels = 1;      // number of channels
-    double num_seconds = 10.0f;         // run time
+    double num_seconds = 300.0f;         // run time
     double uhd_rxgain = 20.0;           // uhd (hardware) rx gain
 
     // ofdm properties
-    unsigned int M          = 48;       // number of subcarriers
+    unsigned int M          = 512;       // number of subcarriers
     unsigned int cp_len     =  6;       // cyclic prefix length
     unsigned int taper_len  =  4;       // cyclic prefix length
 
@@ -123,10 +124,11 @@ int main (int argc, char **argv)
     stream_cmd.stream_now = true;
 
     uhd::device_addr_t dev_addr;
+    dev_addr["addr0"] = "192.168.10.5";
     uhd::usrp::multi_usrp::sptr usrp = uhd::usrp::multi_usrp::make(dev_addr);
 
     // set properties
-    double rx_rate = num_channels*bandwidth;
+    double rx_rate = bandwidth;
 
     // try to set rx rate (oversampled to compensate for CIC filter)
     usrp->set_rx_rate(2.0f * rx_rate);
@@ -170,7 +172,7 @@ int main (int argc, char **argv)
         callbacks[i] = callback;
     }
     unsigned char * p = NULL;   // default subcarrier allocation
-    multichannelrx mcrx(num_channels, M, cp_len, taper_len, p, userdata, callbacks);
+    multichannelrx mcrx(num_channels, M/num_channels, cp_len, taper_len, p, userdata, callbacks);
     
     // start data transfer
     usrp->issue_stream_cmd(uhd::stream_cmd_t::STREAM_MODE_START_CONTINUOUS);
@@ -192,7 +194,10 @@ int main (int argc, char **argv)
         // 'handle' the error codes
         switch(md.error_code){
         case uhd::rx_metadata_t::ERROR_CODE_NONE:
+            break;
         case uhd::rx_metadata_t::ERROR_CODE_OVERFLOW:
+            break;
+        case uhd::rx_metadata_t::ERROR_CODE_TIMEOUT:
             break;
 
         default:

@@ -224,7 +224,7 @@ void ofdmtxrx::transmit_packet(unsigned char * _header,
     ofdmflexframegen_setprops(fg, &fgprops);
 
     // assemble frame
-    ofdmflexframegen_assemble(fg, _header, _payload, _payload_len);
+    ofdmflexframegen_assemble(fg, _header, _payload, _payload_len); 
 
     // generate a single OFDM frame
     bool last_symbol=false;

@@ -27,7 +27,7 @@
 #include <uhd/usrp/multi_usrp.hpp>
 
 #include "multichanneltx.h"
-
+#include "timer.h"
 void usage() {
     printf("multichannel_tx [OPTION]\n");
     printf("\n");
@@ -54,17 +54,17 @@ int main (int argc, char **argv)
     // command-line options
     bool verbose = true;
 
-    double frequency = 462.0e6;         // center frequency [Hz]
-    double bandwidth = 250e3f;          // channel bandwidth [Hz]
+    double frequency = 2.51e9;         // center frequency [Hz]
+    double bandwidth = 5e6;          // channel bandwidth [Hz]
     unsigned int num_channels = 1;      // number of channels
     double txgain_dB = -10.0f;          // software tx gain [dB]
-    double uhd_txgain = 40.0;           // uhd (hardware) tx gain
+    double uhd_txgain = 20.0;           // uhd (hardware) tx gain
 
-    unsigned int payload_len = 1200;    // original data message length
+    unsigned int payload_len = 256;    // original data message length
 
     // ofdm properties
-    unsigned int M          = 48;       // number of subcarriers
-    unsigned int cp_len     =  6;       // cyclic prefix length
+    unsigned int M          = 512;       // number of subcarriers
+    unsigned int cp_len     = 6;       // cyclic prefix length
     unsigned int taper_len  =  4;       // cyclic prefix length
 
     //crc_scheme check     = LIQUID_CRC_32;        // data validity check
@@ -99,13 +99,13 @@ int main (int argc, char **argv)
     unsigned int i;
 
     uhd::device_addr_t dev_addr;
-    //dev_addr["addr0"] = "192.168.10.2";
+    dev_addr["addr0"] = "192.168.10.6";
     //dev_addr["addr1"] = "192.168.10.3";
     uhd::usrp::multi_usrp::sptr usrp = uhd::usrp::multi_usrp::make(dev_addr);
 
     // set properties
     // TODO: compensate for rate provided by multichanneltx
-    double tx_rate = num_channels*bandwidth;
+    double tx_rate = bandwidth;
 
     // try to set tx rate
     usrp->set_tx_rate(2.0f*tx_rate);
@@ -126,13 +126,15 @@ int main (int argc, char **argv)
             tx_rate      * 1e-3f,
             tx_resamp_rate);
     printf("verbosity       :   %s\n", (verbose?"enabled":"disabled"));
-
+   
     // set the IF filter bandwidth
     //usrp->set_tx_bandwidth(2.0f*tx_rate);
 
     // transmitter gain (linear)
     float g = powf(10.0f, txgain_dB/20.0f);
+    std::cout << "g: " << g << std::endl;
     g /= (float)num_channels;
+    std::cout << "g: " << g << std::endl;
 
     // data arrays
     unsigned char header[8];
@@ -143,7 +145,7 @@ int main (int argc, char **argv)
     
     // create multichannel transmitter object
     unsigned char * p = NULL;   // default subcarrier allocation
-    multichanneltx mctx(num_channels, M, cp_len, taper_len, p);
+    multichanneltx mctx(num_channels, M/num_channels, cp_len, taper_len, p);
     
     // allocate array to hold samples
     unsigned int mctx_buffer_len = 2*num_channels;
@@ -159,9 +161,11 @@ int main (int argc, char **argv)
     md.end_of_burst   = false;  // 
     md.has_time_spec  = false;  // set to false to send immediately
 
+    timer t1 = timer_create();
+    timer_tic(t1);
     int continue_running = 1;
     while (continue_running) {
-        // generate data if necessary
+        // generate data if necessarya
         unsigned int channel_id;
         for (channel_id=0; channel_id<num_channels; channel_id++) {
             if (mctx.IsChannelReadyForData(channel_id)) {
@@ -184,6 +188,7 @@ int main (int argc, char **argv)
                 //mctx.UpdateData(channel_id, header, payload, rand() % payload_len);
 #else
                 // update payload data
+                if(verbose)std::cout << "tx: " << pid[channel_id] << std::endl;
                 mctx.UpdateData(channel_id, header, payload, payload_len, ms, fec0, fec1);
 #endif
             }
