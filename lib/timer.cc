@@ -58,7 +58,7 @@ void timer_tic(timer _q)
 {
     int rc = gettimeofday(&_q->tic, NULL);
     if (rc != 0) {
-        fprintf(stderr,"warning: timer_tic(), gettimeofday() returned invalid flag\n");
+        //fprintf(stderr,"warning: timer_tic(), gettimeofday() returned invalid flag\n");
     }
     _q->timer_started = 1;
 }
@@ -67,13 +67,13 @@ void timer_tic(timer _q)
 float timer_toc(timer _q)
 {
     if (!_q->timer_started) {
-        fprintf(stderr,"warning: timer_toc(), timer was never started\n");
+        //fprintf(stderr,"warning: timer_toc(), timer was never started\n");
         return 0;
     }
 
     int rc = gettimeofday(&_q->toc, NULL);
     if (rc != 0) {
-        fprintf(stderr,"warning: timer_toc(), gettimeofday() returned invalid flag\n");
+        //fprintf(stderr,"warning: timer_toc(), gettimeofday() returned invalid flag\n");
     }
 
     // compute execution time (in seconds)

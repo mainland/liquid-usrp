@@ -80,6 +80,7 @@ multichannelrx::multichannelrx(unsigned int         _num_channels,
         userdata[i]  = _userdata[i];
         callback[i]  = _callback[i];
         framesync[i] = ofdmflexframesync_create(M, cp_len, taper_len, _p, callback[i], userdata[i]);
+        ofdmflexframesync_debug_enable(framesync[i]);
 #if BST_DEBUG
         ofdmflexframesync_debug_enable(framesync[i]);
 #endif
