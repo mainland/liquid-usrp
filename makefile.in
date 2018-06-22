@@ -71,7 +71,7 @@ ARFLAGS		= r
 # 
 # liquid headers
 #
-headers_install	:= ofdmtxrx.h
+headers_install	:= ofdmtxrx.h multichannelrx.h multichanneltx.h
 headers		:= $(headers_install)
 include_headers	:= $(addprefix include/,$(headers))
 
