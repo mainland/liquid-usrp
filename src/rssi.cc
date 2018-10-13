@@ -109,7 +109,7 @@ int main (int argc, char **argv)
     usrp->set_rx_gain(uhd_rxgain);
 
     // create and initialize arbitrary resampling component
-    msresamp_crcf resamp = msresamp_crcf_create(rx_resamp_rate,60.0f);
+    msresamp_crcf resamp = msresamp_crcf_create(rx_resamp_rate, 7, 0.4, 60.0f, 64);
 
     // create automatic gain control object and set properties
     agc_crcf agc_rx = agc_crcf_create();

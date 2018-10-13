@@ -176,7 +176,7 @@ int main (int argc, char **argv)
 
     // add arbitrary resampling component
     // TODO : check that resampling rate does indeed correspond to proper bandwidth
-    msresamp_crcf resamp = msresamp_crcf_create(0.5*rx_resamp_rate, 60.0f);
+    msresamp_crcf resamp = msresamp_crcf_create(0.5*rx_resamp_rate, 7, 0.4, 60.0f, 64);
 
     unsigned int block_len = 64;
     assert( (block_len % 2) == 0);  // ensure block length is even

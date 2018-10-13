@@ -128,7 +128,7 @@ int main (int argc, char **argv)
     unsigned int i;
 
     // add arbitrary resampling component
-    msresamp_crcf resamp = msresamp_crcf_create(rx_resamp_rate, 60.0f);
+    msresamp_crcf resamp = msresamp_crcf_create(rx_resamp_rate, 7, 0.4, 60.0f, 64);
 
     // create buffer for sample logging
     windowcf log = windowcf_create(logsize);

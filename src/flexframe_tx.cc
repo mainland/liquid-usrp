@@ -167,7 +167,7 @@ int main (int argc, char **argv)
 
     // add arbitrary resampling component
     // TODO : check that resampling rate does indeed correspond to proper bandwidth
-    msresamp_crcf resamp = msresamp_crcf_create(2.0*tx_resamp_rate, 60.0f);
+    msresamp_crcf resamp = msresamp_crcf_create(2.0*tx_resamp_rate, 7, 0.4, 60.0f, 64);
 
     // transmitter gain (linear)
     float g = powf(10.0f, txgain_dB/20.0f);
