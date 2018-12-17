@@ -36,12 +36,16 @@ static bool verbose;
 // global callback function
 int callback(unsigned char *  _header,
              int              _header_valid,
+             int              _header_test,
              unsigned char *  _payload,
              unsigned int     _payload_len,
              int              _payload_valid,
              framesyncstats_s _stats,
              void *           _userdata)
 {
+    if (_header_test)
+        return 1;
+
     if (verbose) {
         // compute true carrier offset
         printf("***** rssi=%7.2fdB evm=%7.2fdB, ", _stats.rssi, _stats.evm);

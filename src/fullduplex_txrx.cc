@@ -57,6 +57,7 @@ void usage() {
 // receiver callback function
 int callback(unsigned char *  _header,
              int              _header_valid,
+             int              _header_test,
              unsigned char *  _payload,
              unsigned int     _payload_len,
              int              _payload_valid,
@@ -194,12 +195,16 @@ int main (int argc, char **argv)
 // callback function
 int callback(unsigned char *  _header,
              int              _header_valid,
+             int              _header_test,
              unsigned char *  _payload,
              unsigned int     _payload_len,
              int              _payload_valid,
              framesyncstats_s _stats,
              void *           _userdata)
 {
+    if (_header_test)
+        return 1;
+
     // compute true carrier offset
     float samplerate = *((float*)_userdata);
     float cfo = _stats.cfo * samplerate / (2*M_PI);

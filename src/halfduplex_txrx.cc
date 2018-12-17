@@ -69,6 +69,7 @@ void set_timespec(struct timespec * _ts,
 // callback function
 int callback(unsigned char *  _header,
              int              _header_valid,
+             int              _header_test,
              unsigned char *  _payload,
              unsigned int     _payload_len,
              int              _payload_valid,
@@ -285,12 +286,16 @@ void set_timespec(struct timespec * _ts,
 // callback function
 int callback(unsigned char *  _header,
              int              _header_valid,
+             int              _header_test,
              unsigned char *  _payload,
              unsigned int     _payload_len,
              int              _payload_valid,
              framesyncstats_s _stats,
              void *           _userdata)
 {
+    if (_header_test)
+        return 1;
+
     if (verbose) {
         int pid = _header_valid? (_header[0] << 8 | _header[1]) : -1;
         printf("***** rssi=%7.2fdB evm=%7.2fdB, header:%4s, payload[%6d]:%4s\n",

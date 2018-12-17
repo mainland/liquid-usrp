@@ -39,12 +39,16 @@ static float SNRdB_av;
 
 static int callback(unsigned char *  _header,
                     int              _header_valid,
+                    int              _header_test,
                     unsigned char *  _payload,
                     unsigned int     _payload_len,
                     int              _payload_valid,
                     framesyncstats_s _stats,
                     void *           _userdata)
 {
+    if (_header_test)
+        return 1;
+
     num_packets_received++;
     if (verbose) {
         printf("********* callback invoked, ");

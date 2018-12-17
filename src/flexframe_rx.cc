@@ -41,12 +41,16 @@ unsigned int num_valid_bytes_received;
 // callback function
 int callback(unsigned char *  _header,
              int              _header_valid,
+             int              _header_test,
              unsigned char *  _payload,
              unsigned int     _payload_len,
              int              _payload_valid,
              framesyncstats_s _stats,
              void *           _userdata)
 {
+    if (_header_test)
+        return 1;
+
     if (verbose) {
         // compute true carrier offset
         double samplerate = *((double*)_userdata);
